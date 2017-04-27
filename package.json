@@ -1,0 +1,22 @@
+{
+  "author": "Tyler Marshall",
+  "name": "dashmod",
+  "description": "Modular System for creating an FRCDashboard",
+  "version": "1.0.1",
+  "repository": {
+    "url": ""
+  },
+  "main": "dashmod.js",
+  "keywords": [
+    "dash",
+    "mod",
+    "dashboard"
+  ],
+  "dependencies": {
+      "jquery": "^3.2.1",
+      "smoothie": "^1.27.0"
+  },
+  "engines": {
+    "node": "*"
+  }
+}
