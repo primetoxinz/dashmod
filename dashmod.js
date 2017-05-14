@@ -1,17 +1,10 @@
 "use strict";
 var $ = require('jquery');
 var {SmoothieChart, TimeSeries} = require('smoothie');;
+var {Client} = require('wpilib-nt-client');
+var ip = '127.0.0.1';
 (function(exports) {
-  function setValue(table, key, value) {
-    if (NetworkTables != null)
-      NetworkTables.setValue("/" + table + "/" + key, value);
-    }
-
-  function getValue(table, key) {
-    if (NetworkTables != null)
-      return NetworkTables.getValue("/" + table + "/" + key);
-    return null;
-  }
+  const NetworkTables = new Client();
 
   function capitalize(string) {
     return string.toLowerCase().replace(/(?:^|\s)\S/g, function(a) {
@@ -118,6 +111,7 @@ var {SmoothieChart, TimeSeries} = require('smoothie');;
   }
   class Selector extends Entry {
     init() {
+      var main = this;
       var container = $("<div></div>");
       $("<span>\t" + this.data.prefice + " : </span>").appendTo(container);
       var select = $("<select id=" + this.data.id + "></select>");
@@ -125,8 +119,9 @@ var {SmoothieChart, TimeSeries} = require('smoothie');;
         select.append($("<option value='" + v + "'>" + capitalize(v) + "</option>"));
       });
       select.appendTo(container);
+
       select.on('change', function() {
-        setValue('SmartDashboard', $(this).attr("id"), this.value);
+        NetworkTables.Assign($(this).val(),main.data.key);
       });
       super.init(container);
     }
@@ -187,6 +182,7 @@ var {SmoothieChart, TimeSeries} = require('smoothie');;
     }
     static registerEntryType(entryClass) {
       var name = entryClass.prototype.constructor.name.toLowerCase();
+      console.log(entryClass.prototype);
       entryRegistry[name] = entryClass.prototype.constructor;
     }
     update(key, value) {
@@ -216,7 +212,7 @@ var {SmoothieChart, TimeSeries} = require('smoothie');;
   ]);
 
   const loadedModules = [];
-  function fromJSON(file) {
+  function load(file) {
     var json = $.getJSON(file);
     $(document).ready(function() {
       $.each(json.responseJSON, function(k, module) {
@@ -224,9 +220,18 @@ var {SmoothieChart, TimeSeries} = require('smoothie');;
       });
     })
   }
+
+  NetworkTables.start((isConnected, err) => {});
+  NetworkTables.addListener((key, val, type, id) => {
+    $.each(loadedModules, function(k, v) {
+      v.update(key, val);
+    });
+  });
   exports.Module = Module;
   exports.Entry = Entry;
-  exports.load = fromJSON;
+  exports.load = load;
+  exports.NetworkTables = NetworkTables;
+
 })(typeof exports === 'undefined'
   ? this
   : exports);
