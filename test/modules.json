@@ -1,0 +1,113 @@
+{
+  "main": [{
+      "type": "header",
+      "data": {
+        "background": "#345763",
+        "color": "#FF00FF",
+        "title": "TEST"
+      }
+    },
+    {
+      "type": "graph",
+      "data": {
+        "prefice": "Voltage",
+        "key": "/SmartDashboard/voltage",
+        "id": "voltage",
+        "format": {
+          "interpolation": "linear",
+          "minValue": 0,
+          "grid": {
+            "strokeStyle": "gray",
+            "fillStyle": "black",
+            "lineWidth": 1,
+            "millisPerLine": 250,
+            "verticalSections": 6
+          }
+        }
+      }
+    },
+    {
+      "type": "graph",
+      "data": {
+        "prefice": "Current",
+        "key": "/SmartDashboard/current",
+        "id": "voltage",
+        "format": {
+          "interpolation": "linear",
+          "minValue": 0,
+          "grid": {
+            "strokeStyle": "green",
+            "fillStyle": "lightblue",
+            "lineWidth": 1,
+            "millisPerLine": 250,
+            "verticalSections": 6
+          }
+        }
+      }
+    },
+    {
+      "type": "numbervalue",
+      "data": {
+        "prefice": "Robot Time",
+        "key": "/SmartDashboard/robotTime",
+        "id": "robotTime",
+        "formats": {
+          "low": {
+            "predicate": {
+              "min": 0,
+              "max": 100
+            },
+            "color": "#0000FF"
+          }
+        }
+      }
+    }
+
+  ],
+  "options": [
+    {
+      "type":"header",
+      "data": {
+        "title":"Options",
+        "background": "#AA0000 repeat",
+        "color": "white"
+      }
+    },
+    {
+      "type": "selector",
+      "data": {
+        "prefice": "Autonomous",
+        "key": "/SmartDashboard/autonomous",
+        "id": "autonomous",
+        "choices": ["left", "center", "right"]
+      }
+    },
+    {
+      "type": "stringvalue",
+      "data": {
+        "prefice": "Robot Phase",
+        "key": "/SmartDashboard/robotPhase",
+        "id": "robotPhase"
+      }
+    },
+    {
+      "type": "testentry",
+      "data": {
+        "prefice": "Robot testentry",
+        "key": "/SmartDashboard/testentry",
+        "id": "testentry"
+      }
+    },
+    {
+      "type": "camera",
+      "data": {
+        "id": "camera",
+        "srcs": [
+          "https://github.com/FRCDashboard/FRCDashboard/raw/master/images/screenshots.gif",
+          "roborio-1793-frc.local:5800/?action=stream",
+          "http://192.168.1.25:8090/?action=stream"
+        ]
+      }
+    }
+  ]
+}

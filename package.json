@@ -7,19 +7,23 @@
     "url": ""
   },
   "main": "dashmod.js",
+  "scripts": {
+    "start": "electron test/main.js "
+  },
   "keywords": [
     "dash",
     "mod",
     "dashboard"
   ],
   "dependencies": {
-      "jquery": "^3.2.1",
-      "smoothie": "^1.27.0",
-      "os": "^0.1.1",
-      "path": "^0.12.7",
-      "fs": "0.0.1-security",
-      "mkdirp": "^0.5.1",
-      "wpilib-nt-client": "^1.2.6"
+    "fs": "0.0.1-security",
+    "jquery": "^3.2.1",
+    "mkdirp": "^0.5.1",
+    "os": "^0.1.1",
+    "path": "^0.12.7",
+    "smoothie": "^1.27.0",
+    "vue": "^2.3.3",
+    "wpilib-nt-client": "^1.2.6"
   },
   "engines": {
     "node": "*"
