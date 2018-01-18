@@ -3,7 +3,7 @@ var $ = require('jquery');
 var {SmoothieChart, TimeSeries} = require('smoothie');
 ;
 var {Client} = require('wpilib-nt-client');
-
+var ip = '127.0.0.1';
 (function (exports) {
     const NetworkTables = new Client();
 
@@ -27,15 +27,15 @@ var {Client} = require('wpilib-nt-client');
         }
 
         init(element) {
-            const li = $("<li></li>").append(element);
-            const list = $(`.${this.module.key} ul`);
+            var li = $("<li></li>").append(element);
+            var list = $("." + this.module.key + " ul")
             list.append(li);
         }
     }
 
     class Header extends Entry {
         init() {
-            var header = $(`<h1>${capitalize(this.data.title)}</h1>`).css({
+            var header = $("<h1>" + capitalize(this.data.title) + "</h1>").css({
                 "background": this.data.background,
                 color: this.data.color
             });
@@ -46,7 +46,7 @@ var {Client} = require('wpilib-nt-client');
     class Camera extends Entry {
         init() {
             this.index = 0;
-            const viewer = $(`<div id=${this.data.id}></div>`);
+            var viewer = $("<div id=" + this.data.id + "></div>");
             this.module.container.css("min-width", 720);
             viewer.css({
                 width: 720,
@@ -55,36 +55,35 @@ var {Client} = require('wpilib-nt-client');
                 "background-repeat": "no-repeat",
                 "text-align": "center"
             });
-            const _this = this;
+            var _this = this;
             viewer.click(function (event) {
                 if (event.shiftKey) {
                     _this.index = (_this.index + 1) % _this.data.srcs.length;
-                    viewer.css('background-image', `url(${_this.data.srcs[_this.index]})`);
+                    viewer.css('background-image', 'url(' + _this.data.srcs[_this.index] + ')');
                 }
             });
-            viewer.css('background-image', `url(${this.data.srcs[0]})`);
+            viewer.css('background-image', 'url(' + this.data.srcs[0] + ')');
             super.init(viewer);
         }
     }
 
     class Graph extends Entry {
         createGraph(canvas) {
-            let graph = new SmoothieChart(this.data.format);
-            let line = new TimeSeries();
+            var graph = new SmoothieChart(this.data.format);
+            var line = new TimeSeries();
             graph.streamTo(canvas.get(0), 1000);
             graph.addTimeSeries(line);
             return line;
         }
 
         init() {
-            const w = 300,
+            var w = 300,
                 h = 100;
-            const container = $("<div></div>");
-            const canvas = $("<canvas></canvas>");
-
+            var container = $("<div></div>");
+            var canvas = $("<canvas></canvas>");
             canvas.width(w);
             canvas.height(h);
-            $(`<span>\t${this.data.prefice} : </span>`).appendTo(container);
+            $("<span>\t" + this.data.prefice + " : </span>").appendTo(container);
             canvas.appendTo(container);
             super.init(container);
             if (this.data.format == null)
@@ -102,9 +101,9 @@ var {Client} = require('wpilib-nt-client');
 
     class NumberValue extends Entry {
         setFormat(value) {
-            let color = "#F00";
+            var color = "#F00";
             $.each(this.data.formats, function (k, f) {
-                const r = new Range(f.predicate);
+                var r = new Range(f.predicate);
                 if (r.inRange(value)) {
                     color = f.color;
                 }
@@ -113,35 +112,35 @@ var {Client} = require('wpilib-nt-client');
         }
 
         init() {
-            super.init($(`<span>\t${this.data.prefice} : </span><span id=${this.data.id}>0</span>`));
+            super.init($("<span>\t" + this.data.prefice + " : </span><span id=" + this.data.id + ">0</span>"));
         }
 
         update(value) {
-            $(`#${this.data.id}`).html(value).css("color", this.setFormat(value));
+            $("#" + this.data.id).html(value).css("color", this.setFormat(value));
         }
     }
 
     class StringValue extends Entry {
         init() {
-            super.init($(`<span>\t${this.data.prefice} : </span><span id=${this.data.id}></span>`));
+            super.init($("<span>\t" + this.data.prefice + " : </span><span id=" + this.data.id + "></span>"));
         }
 
         update(value) {
-            $(`#${this.data.id}`).html(value);
+            $("#" + this.data.id).html(value);
         }
     }
 
     class Selector extends Entry {
         init() {
-            const main = this;
-            const container = $("<div></div>");
-            $(`<span>\t${this.data.prefice}:</span>`).appendTo(container);
-            const select = $(`<select id=${this.data.id}></select>`);
+            var main = this;
+            var container = $("<div></div>");
+            $("<span>\t" + this.data.prefice + " : </span>").appendTo(container);
+            var select = $("<select id=" + this.data.id + "></select>");
             $.each(this.data.choices, function (k, v) {
-                select.append($(`<option value='${v}'>${capitalize(v)}</option>`));
+                select.append($("<option value='" + v + "'>" + capitalize(v) + "</option>"));
             });
             select.appendTo(container);
-
+            NetworkTables.Assign(select.val(), main.data.key);
             select.on('change', function () {
                 NetworkTables.Assign($(this).val(), main.data.key);
             });
@@ -165,26 +164,25 @@ var {Client} = require('wpilib-nt-client');
             this.key = key;
             this.entries = entries;
             this.loaded = [];
-            this.container = $(`<div class='list ${this.key}'></div>`);
+            this.container = $("<div class='list " + this.key + "'></div>");
             this.container.append($("<ul></ul>"));
             this.container.appendTo(".section");
-            let header = false;
+            var header = false;
             this.entries.push({
                 "type": "header",
                 "data": {
                     "title": this.key
                 }
             });
-            for (let i = 0; i < entries.length; i++) {
-
-                const e = entries[i];
+            for (var i = 0; i < entries.length; i++) {
+                var e = entries[i];
                 if (!(e.type in entryRegistry))
                     continue;
                 try {
-                    const newEntry = new entryRegistry[e.type](this, e.data);
+                    var newEntry = new entryRegistry[e.type](this, e.data);
                     if (newEntry != null) {
                         try {
-                            let skip = false;
+                            var skip = false;
                             if (newEntry instanceof Header) {
                                 if (header)
                                     skip = true;
@@ -205,13 +203,13 @@ var {Client} = require('wpilib-nt-client');
         }
 
         static registerEntryType(entryClass) {
-            const name = entryClass.prototype.constructor.name.toLowerCase();
+            var name = entryClass.prototype.constructor.name.toLowerCase();
             entryRegistry[name] = entryClass.prototype.constructor;
         }
 
         update(key, value) {
             $.each(this.loaded, function (k, entry) {
-                if (entry.data.key === key) {
+                if (entry.data.key == key) {
                     entry.update(value);
                 }
             });
@@ -235,30 +233,25 @@ var {Client} = require('wpilib-nt-client');
         StringValue
     ]);
 
+    const loadedModules = [];
+
+    function load(file) {
+        NetworkTables.start((isConnected, err) => {
+        });
+        var json = $.getJSON(file);
+        $(document).ready(function () {
+            $.each(json.responseJSON, function (k, module) {
+                loadedModules.push(new Module(k, module));
+            });
+        })
+    }
+
 
     NetworkTables.addListener((key, val, type, id) => {
         $.each(loadedModules, function (k, v) {
             v.update(key, val);
         });
     });
-
-    const loadedModules = [];
-
-    function load(file) {
-        const json = $.getJSON(file);
-        $(document).ready(function () {
-            $.each(json.responseJSON, function (k, module) {
-                loadedModules.push(new Module(k, module));
-            });
-        });
-        NetworkTables.start((isConnected, err) => {
-            console.log({con, err});
-            if (!con)
-                throw err;
-        });
-    }
-
-
     exports.Module = Module;
     exports.Entry = Entry;
     exports.load = load;

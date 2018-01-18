@@ -2,7 +2,7 @@
   "author": "Tyler Marshall",
   "name": "dashmod",
   "description": "Modular System for creating an FRCDashboard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "repository": {
     "url": ""
   },
