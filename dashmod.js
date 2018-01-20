@@ -28,8 +28,12 @@ var ip = '127.0.0.1';
 
         init(element) {
             var li = $("<li></li>").append(element);
-            var list = $("." + this.module.key + " ul")
+            var list = $("." + this.module.key + " ul");
             list.append(li);
+        }
+
+        contains(key) {
+            return data.key === key;
         }
     }
 
@@ -209,7 +213,7 @@ var ip = '127.0.0.1';
 
         update(key, value) {
             $.each(this.loaded, function (k, entry) {
-                if (entry.data.key == key) {
+                if (entry.contains(key)) {
                     entry.update(value);
                 }
             });
